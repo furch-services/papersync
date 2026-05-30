@@ -23,9 +23,9 @@ Automatically syncs sent invoices from [Papierkram](https://www.papierkram.de) t
 ## Architecture
 
 ```
-Internet → Cloudflare Tunnel → Caddy → PaperSync Container
-                                              ↕                    ↕
-                                    Papierkram API      Paperless-ngx API
+Internet → Reverse Proxy → PaperSync Container
+                                    ↕                    ↕
+                          Papierkram API      Paperless-ngx API
 ```
 
 | Component | Role |
@@ -72,15 +72,11 @@ services:
     image: ghcr.io/furch-services/papersync:latest
     restart: unless-stopped
     env_file: .env
+    ports:
+      - "8000:8000"
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
-    networks:
-      - internal
-
-networks:
-  internal:
-    external: true
 ```
 
 ### 5. Start
@@ -93,13 +89,9 @@ docker compose up -d
 
 Open the web UI, log in, and enter your Papierkram and Paperless-ngx credentials under **Einstellungen**.
 
-## Caddy configuration
+## Reverse proxy
 
-```caddyfile
-papersync.example.com {
-    reverse_proxy papersync:8000
-}
-```
+Running PaperSync behind a reverse proxy (Caddy, nginx, Traefik, etc.) is recommended for SSL termination, custom domains, and access control. The app listens on port `8000` and respects the `X-Forwarded-*` headers passed by the proxy.
 
 ## Environment variables
 

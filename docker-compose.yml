@@ -4,18 +4,14 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    ports:
+      - "8000:8000"
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
-    networks:
-      - internal
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
-
-networks:
-  internal:
-    external: true
