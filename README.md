@@ -69,7 +69,7 @@ APP_PASSWORD=<your-password>
 ```yaml
 services:
   papersync:
-    image: git.furch-services.de/gitea_max.furch/papersync:latest
+    image: ghcr.io/furch-services/papersync:latest
     restart: unless-stopped
     env_file: .env
     volumes:
@@ -128,23 +128,6 @@ All sync settings are stored in the database and configurable via `/settings`:
 | Default Document Type | Paperless document type ID |
 | Default Correspondent | Paperless correspondent ID |
 
-## CI/CD
-
-The Gitea Actions pipeline runs on every push to `main`:
-
-1. **SonarQube scan** — runs tests with coverage, sends report to SonarQube, enforces Quality Gate
-2. **Docker build** — only runs if the Quality Gate passes; builds, tags (`latest` + commit SHA), and pushes to the Gitea Container Registry
-
-Required Gitea secrets/variables:
-
-| Key | Type | Value |
-|---|---|---|
-| `REGISTRY` | Variable | Gitea hostname, e.g. `git.example.com` |
-| `REGISTRY_TOKEN` | Secret | Personal access token with `write:packages` |
-| `SONAR_TOKEN` | Secret | SonarQube user token |
-| `SONAR_HOST_URL` | Variable | SonarQube instance URL |
-| `SONAR_TEST_SECRET_KEY` | Secret | Valid Fernet key for running tests in CI |
-
 ## Local development
 
 ```bash
@@ -185,9 +168,9 @@ docker compose up -d
 
 ## Troubleshooting
 
-**Container won't start / permission error on logs:** The bind-mounted `./logs` directory may be owned by root. The entrypoint script fixes this automatically — if it persists, check that the `papersync` user (UID 1000) can write to the volume.
-
 **No invoices synced:** Check the web UI logs. Common cause: Papierkram API key is wrong, or the invoice state doesn't match (`unpaid`, `paid`, `overdue`).
+
+**Container won't start / permission error on logs:** The bind-mounted `./logs` directory may be owned by root. The entrypoint script fixes this automatically on startup.
 
 **Auth errors after restart:** Session tokens are in-memory — users need to log in again after a container restart.
 

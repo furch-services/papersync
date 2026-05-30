@@ -1,6 +1,6 @@
 services:
   papersync:
-    image: ${REGISTRY:-registry.example.com}/${REGISTRY_OWNER:-furchservices}/papersync:${TAG:-latest}
+    image: ghcr.io/furch-services/papersync:latest
     restart: unless-stopped
     env_file:
       - .env
