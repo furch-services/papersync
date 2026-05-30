@@ -95,6 +95,27 @@ docker compose up -d
 
 Open the web UI, log in, and enter your Papierkram and Paperless-ngx credentials under **Einstellungen**.
 
+## Unraid
+
+> **Note:** The PaperSync template is currently pending review by the Unraid Community Applications team. This section will be updated once the app is available in CA.
+
+In the meantime, you can install PaperSync on Unraid manually via the template URL:
+
+### Manual template installation
+
+1. In the Unraid web UI, go to **Docker** → **Add Container** → click **Template repositories** and add:
+   ```
+   https://raw.githubusercontent.com/furch-services/papersync/main/unraid/papersync.xml
+   ```
+2. Click **Save** — PaperSync now appears in the template list.
+3. Select it, fill in `SECRET_KEY` and `APP_PASSWORD`, and click **Apply**.
+
+The data and log directories are automatically created under `/mnt/user/appdata/papersync/`.
+
+### Reverse proxy on Unraid
+
+If you use Nginx Proxy Manager or Swag on Unraid, point a proxy host at `http://papersync:8000`. Set `APP_ENV=production` (the default) to keep the secure cookie flag active when running behind HTTPS.
+
 ## Reverse proxy
 
 Running PaperSync behind a reverse proxy (Caddy, nginx, Traefik, etc.) is recommended for SSL termination, custom domains, and access control. The app listens on port `8000` and respects the `X-Forwarded-*` headers passed by the proxy.
