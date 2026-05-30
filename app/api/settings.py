@@ -1,5 +1,7 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -12,9 +14,11 @@ from app.scheduler import scheduler
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+DbSession = Annotated[Session, Depends(get_db_session)]
+
 
 @router.get("/settings", response_class=HTMLResponse)
-def settings_page(request: Request, db: Session = Depends(get_db_session)):
+def settings_page(request: Request, db: DbSession) -> HTMLResponse:
     cfg = settings_repo.get_or_create_settings(db)
     return templates.TemplateResponse(
         request,
@@ -26,17 +30,17 @@ def settings_page(request: Request, db: Session = Depends(get_db_session)):
 @router.post("/settings", response_class=HTMLResponse)
 def settings_save(
     request: Request,
-    db: Session = Depends(get_db_session),
-    csrf_token: str = Form(...),
-    papierkram_api_url: str = Form(...),
-    papierkram_api_key: str = Form(default=""),
-    paperless_base_url: str = Form(...),
-    paperless_api_token: str = Form(default=""),
-    polling_interval_minutes: int = Form(default=5),
-    default_tags: str = Form(default=""),
-    default_document_type: str = Form(default=""),
-    default_correspondent: str = Form(default=""),
-):
+    db: DbSession,
+    csrf_token: Annotated[str, Form()],
+    papierkram_api_url: Annotated[str, Form()],
+    paperless_base_url: Annotated[str, Form()],
+    papierkram_api_key: Annotated[str, Form()] = "",
+    paperless_api_token: Annotated[str, Form()] = "",
+    polling_interval_minutes: Annotated[int, Form()] = 5,
+    default_tags: Annotated[str, Form()] = "",
+    default_document_type: Annotated[str, Form()] = "",
+    default_correspondent: Annotated[str, Form()] = "",
+) -> Response:
     if not verify_csrf_token(csrf_token):
         cfg = settings_repo.get_or_create_settings(db)
         return templates.TemplateResponse(

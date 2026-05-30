@@ -80,7 +80,7 @@ class PaperlessService:
             response = self._client.post(
                 "/api/documents/post_document/",
                 content=_build_multipart(filename, pdf_bytes, data, tag_data),
-                headers={"Content-Type": _multipart_content_type(filename, pdf_bytes, data, tag_data)},
+                headers={"Content-Type": _multipart_content_type()},
             )
         response.raise_for_status()
         task_uuid: str = response.json()
@@ -136,5 +136,5 @@ def _build_multipart(
     return b''.join(parts)
 
 
-def _multipart_content_type(filename: str, pdf_bytes: bytes, data: dict, tag_data: list) -> str:
+def _multipart_content_type() -> str:
     return "multipart/form-data; boundary=----PaperSyncBoundary"

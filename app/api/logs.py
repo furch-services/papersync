@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -12,15 +14,17 @@ templates = Jinja2Templates(directory="app/templates")
 LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 PAGE_SIZE = 50
 
+DbSession = Annotated[Session, Depends(get_db_session)]
+
 
 @router.get("/logs", response_class=HTMLResponse)
 def logs_page(
     request: Request,
-    db: Session = Depends(get_db_session),
-    page: int = Query(default=1, ge=1),
-    level: str = Query(default=""),
-    search: str = Query(default=""),
-):
+    db: DbSession,
+    page: Annotated[int, Query(ge=1)] = 1,
+    level: Annotated[str, Query()] = "",
+    search: Annotated[str, Query()] = "",
+) -> HTMLResponse:
     items, total = log_repo.get_logs(
         db,
         page=page,

@@ -1,4 +1,4 @@
-from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+from itsdangerous import BadSignature, URLSafeTimedSerializer
 
 from app.core.config import settings
 
@@ -15,5 +15,5 @@ def verify_csrf_token(token: str, max_age: int = 3600) -> bool:
     try:
         _serializer().loads(token, max_age=max_age)
         return True
-    except (BadSignature, SignatureExpired):
+    except BadSignature:
         return False

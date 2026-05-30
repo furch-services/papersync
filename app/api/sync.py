@@ -1,5 +1,7 @@
+from typing import Annotated
+
 from fastapi import APIRouter, BackgroundTasks, Depends, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -9,6 +11,8 @@ from app.services.sync import SyncResult, SyncService
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+
+DbSession = Annotated[Session, Depends(get_db_session)]
 
 
 def _run_sync(dry_run: bool = False) -> SyncResult:
@@ -21,8 +25,8 @@ def _run_sync(dry_run: bool = False) -> SyncResult:
 @router.post("/sync/run")
 def trigger_sync(
     background_tasks: BackgroundTasks,
-    csrf_token: str = Form(...),
-):
+    csrf_token: Annotated[str, Form()],
+) -> RedirectResponse:
     if not verify_csrf_token(csrf_token):
         return RedirectResponse("/dashboard?error=csrf", status_code=303)
     background_tasks.add_task(_run_sync, dry_run=False)
@@ -32,9 +36,9 @@ def trigger_sync(
 @router.post("/sync/test")
 async def trigger_test_run(
     request: Request,
-    csrf_token: str = Form(...),
-    db: Session = Depends(get_db_session),
-):
+    csrf_token: Annotated[str, Form()],
+    db: DbSession,
+) -> Response:
     if not verify_csrf_token(csrf_token):
         return RedirectResponse("/dashboard?error=csrf", status_code=303)
 
