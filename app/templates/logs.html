@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Logs — PaperSync{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Logs</h1>
+  <span class="text-muted small">{{ total }} Einträge gesamt</span>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" action="/logs" class="row g-2 align-items-center">
+      <div class="col-auto">
+        <select name="level" class="form-select form-select-sm">
+          <option value="">Alle Level</option>
+          {% for l in levels %}
+          <option value="{{ l }}" {% if level_filter == l %}selected{% endif %}>{{ l }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <input type="text" name="search" class="form-control form-control-sm" placeholder="Suche…" value="{{ search }}">
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-outline-primary">Filtern</button>
+        <a href="/logs" class="btn btn-sm btn-outline-secondary ms-1">Zurücksetzen</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    {% if logs %}
+    <table class="table table-sm table-hover mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Zeitstempel</th>
+          <th>Level</th>
+          <th>Quelle</th>
+          <th>Nachricht</th>
+        </tr>
+      </thead>
+      <tbody class="font-monospace small">
+        {% for log in logs %}
+        <tr>
+          <td class="text-nowrap text-muted">{{ log.timestamp.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+          <td><span class="log-{{ log.level }} fw-semibold">{{ log.level }}</span></td>
+          <td class="text-muted">{{ log.source }}</td>
+          <td>{{ log.message }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if total_pages > 1 %}
+    <nav class="p-3">
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page - 1 }}&level={{ level_filter }}&search={{ search }}">‹</a>
+        </li>
+        {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+          <a class="page-link" href="?page={{ p }}&level={{ level_filter }}&search={{ search }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ page + 1 }}&level={{ level_filter }}&search={{ search }}">›</a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="p-5 text-center text-muted">
+      <i class="bi bi-journal-x fs-2 d-block mb-2"></i>
+      Keine Log-Einträge gefunden.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

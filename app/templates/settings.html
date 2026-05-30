@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Einstellungen — PaperSync{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Einstellungen</h1>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i>{{ error }}</div>
+{% endif %}
+
+<form method="post" action="/settings">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+  <div class="card mb-4">
+    <div class="card-header fw-semibold"><i class="bi bi-receipt me-1"></i>Papierkram</div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">API URL</label>
+        <input type="url" name="papierkram_api_url" class="form-control"
+               value="{{ cfg.papierkram_api_url }}" placeholder="https://meinunternehmen.papierkram.de" required>
+        <div class="form-text">Ihre Papierkram-Instanz-URL.</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">API Key</label>
+        <input type="password" name="papierkram_api_key" class="form-control"
+               placeholder="{% if cfg.papierkram_api_key_encrypted %}••••• (leer lassen zum Behalten){% else %}Bearer Token eintragen{% endif %}">
+        <div class="form-text">Unter /einstellungen/api in Papierkram erstellen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header fw-semibold"><i class="bi bi-archive me-1"></i>Paperless-ngx</div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">Base URL</label>
+        <input type="url" name="paperless_base_url" class="form-control"
+               value="{{ cfg.paperless_base_url }}" placeholder="https://dms.example.com" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">API Token</label>
+        <input type="password" name="paperless_api_token" class="form-control"
+               placeholder="{% if cfg.paperless_api_token_encrypted %}••••• (leer lassen zum Behalten){% else %}Token eintragen{% endif %}">
+        <div class="form-text">Im Paperless-Profil unter API-Token erstellen.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header fw-semibold"><i class="bi bi-clock me-1"></i>Synchronisation</div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">Polling-Intervall (Minuten)</label>
+        <input type="number" name="polling_interval_minutes" class="form-control" style="max-width:120px"
+               value="{{ cfg.polling_interval_minutes }}" min="1" max="1440" required>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header fw-semibold"><i class="bi bi-tags me-1"></i>Dokument-Metadaten (optional)</div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">Standard-Tags</label>
+        <input type="text" name="default_tags" class="form-control" style="max-width:300px"
+               value="{{ cfg.default_tags or '' }}" placeholder='[1, 2, 3]'>
+        <div class="form-text">JSON-Array mit Paperless-Tag-IDs, z.B. <code>[5, 12]</code></div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Standard-Dokumententyp (ID)</label>
+        <input type="number" name="default_document_type" class="form-control" style="max-width:120px"
+               value="{{ cfg.default_document_type or '' }}" placeholder="z.B. 3">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Standard-Korrespondent (ID)</label>
+        <input type="number" name="default_correspondent" class="form-control" style="max-width:120px"
+               value="{{ cfg.default_correspondent or '' }}" placeholder="z.B. 7">
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    <i class="bi bi-save"></i> Speichern
+  </button>
+</form>
+{% endblock %}

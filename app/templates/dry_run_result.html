@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Testlauf — PaperSync{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Testlauf-Ergebnis</h1>
+
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="row text-center g-3">
+      <div class="col-md-4">
+        <div class="fs-1 fw-bold text-primary">{{ result.uploaded }}</div>
+        <div class="text-muted">Würden hochgeladen</div>
+      </div>
+      <div class="col-md-4">
+        <div class="fs-1 fw-bold text-secondary">{{ result.skipped }}</div>
+        <div class="text-muted">Bereits synchronisiert</div>
+      </div>
+      <div class="col-md-4">
+        <div class="fs-1 fw-bold text-danger">{{ result.errors }}</div>
+        <div class="text-muted">Fehler</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <i class="bi bi-info-circle me-1"></i>
+  Dies war ein Testlauf. Es wurden <strong>keine Dokumente</strong> in Paperless-ngx hochgeladen.
+</div>
+
+<a href="/dashboard" class="btn btn-primary"><i class="bi bi-arrow-left me-1"></i>Zum Dashboard</a>
+{% endblock %}
