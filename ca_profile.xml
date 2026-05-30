@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<CAProfile>
+  <Profile>
+    PaperSync is maintained by Maximilian Furch / Furch Services.
+    This repository provides the Docker template for PaperSync — a self-hosted tool that automatically syncs sent invoices from Papierkram to Paperless-ngx.
+    For support, open an issue on GitHub. The full source code and documentation are available at the project page.
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/furch-services/papersync/main/app/static/img/favicon.svg</Icon>
+  <WebPage>https://github.com/furch-services/papersync</WebPage>
+  <DonateLink>https://furch-services.de</DonateLink>
+  <DonateText>Visit Furch Services</DonateText>
+</CAProfile>
