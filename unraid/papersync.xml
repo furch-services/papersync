@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>PaperSync</Name>
+  <Repository>ghcr.io/furch-services/papersync:latest</Repository>
+  <Registry>https://ghcr.io/furch-services/papersync</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/furch-services/papersync/issues</Support>
+  <Project>https://github.com/furch-services/papersync</Project>
+  <Overview>
+    Automatically syncs sent invoices from Papierkram to Paperless-ngx.
+    Polls the Papierkram API for sent invoices, downloads them as PDFs, and uploads them to your Paperless-ngx instance.
+    Includes a password-protected web dashboard for status monitoring, manual sync, dry-run mode, and log viewing.
+    Single container — no external dependencies, no message queues.
+  </Overview>
+  <Beta>false</Beta>
+  <Category>Tools: Productivity:</Category>
+  <WebUI>http://[IP]:[PORT:8000]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/furch-services/papersync/main/unraid/papersync.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/furch-services/papersync/main/app/static/img/favicon.svg</Icon>
+  <ExtraParams/>
+  <DateInstalled/>
+
+  <!-- Volumes -->
+  <Config
+    Name="Data"
+    Target="/app/data"
+    Default="/mnt/user/appdata/papersync/data"
+    Mode="rw"
+    Description="Persistent storage for the SQLite database and encrypted credentials."
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false"/>
+
+  <Config
+    Name="Logs"
+    Target="/app/logs"
+    Default="/mnt/user/appdata/papersync/logs"
+    Mode="rw"
+    Description="Container log files."
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false"/>
+
+  <!-- Port -->
+  <Config
+    Name="Web UI Port"
+    Target="8000"
+    Default="8000"
+    Mode="tcp"
+    Description="Port for the PaperSync web dashboard."
+    Type="Port"
+    Display="always"
+    Required="true"
+    Mask="false"/>
+
+  <!-- Required environment variables -->
+  <Config
+    Name="SECRET_KEY"
+    Target="SECRET_KEY"
+    Default=""
+    Description="Fernet encryption key used to encrypt stored API credentials. Generate with: python3 -c &quot;from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())&quot;"
+    Type="Variable"
+    Display="always"
+    Required="true"
+    Mask="true"/>
+
+  <Config
+    Name="APP_PASSWORD"
+    Target="APP_PASSWORD"
+    Default=""
+    Description="Password for the web UI login."
+    Type="Variable"
+    Display="always"
+    Required="true"
+    Mask="true"/>
+
+  <!-- Optional environment variables -->
+  <Config
+    Name="APP_USERNAME"
+    Target="APP_USERNAME"
+    Default="admin"
+    Description="Username for the web UI login."
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="APP_ENV"
+    Target="APP_ENV"
+    Default="production"
+    Description="Application environment. Set to &quot;development&quot; to disable the secure cookie flag (e.g. when accessing without HTTPS)."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="LOG_LEVEL"
+    Target="LOG_LEVEL"
+    Default="INFO"
+    Description="Logging verbosity. One of: DEBUG, INFO, WARNING, ERROR."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="DATABASE_URL"
+    Target="DATABASE_URL"
+    Default="sqlite:////app/data/papersync.db"
+    Description="SQLAlchemy database URL. The default path is correct for the bind-mounted data directory."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+</Container>
