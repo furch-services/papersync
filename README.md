@@ -116,11 +116,17 @@ Open the web UI, log in, and enter your Papierkram and Paperless-ngx credentials
 
 ## Unraid
 
-> **Note:** The PaperSync template is currently pending review by the Unraid Community Applications team. This section will be updated once the app is available in CA.
+PaperSync is available in the [Unraid Community Applications](https://ca.unraid.net) store. Search for **PaperSync** and install directly from the CA interface.
 
-In the meantime, you can install PaperSync on Unraid manually via the template URL:
+### Installation via Community Applications
 
-### Manual template installation
+1. In the Unraid web UI, open **Apps** (Community Applications).
+2. Search for **PaperSync**.
+3. Click **Install**, fill in `SECRET_KEY` and `APP_PASSWORD`, and click **Apply**.
+
+### Manual template installation (alternative)
+
+If you prefer to install without CA, add the template URL manually:
 
 1. In the Unraid web UI, go to **Docker** → **Add Container** → click **Template repositories** and add:
    ```
