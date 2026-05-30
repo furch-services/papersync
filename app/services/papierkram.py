@@ -7,7 +7,7 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_ex
 logger = logging.getLogger("papersync.papierkram")
 
 # States that represent sent/finalized invoices (not drafts)
-SENT_STATES = {"open", "paid", "overdue"}
+SENT_STATES = {"unpaid", "open", "paid", "overdue"}
 
 
 @dataclass
@@ -58,9 +58,18 @@ class PapierkramService:
 
         while True:
             data = self._get("/income/invoices", page=page, page_size=100)
-            for entry in data.get("entries", []):
+            entries = data.get("entries", [])
+            logger.debug(
+                "Papierkram page %d: %d entries, has_more=%s",
+                page, len(entries), data.get("has_more"),
+            )
+            for entry in entries:
                 state = entry.get("state", "")
                 if state not in SENT_STATES:
+                    logger.debug(
+                        "Skipping invoice %s (invoice_no=%s) with state=%r",
+                        entry.get("id"), entry.get("invoice_no"), state,
+                    )
                     continue
                 invoices.append(
                     Invoice(
