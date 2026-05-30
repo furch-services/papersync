@@ -12,6 +12,25 @@
 
 Automatically syncs sent invoices from [Papierkram](https://www.papierkram.de) to [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx). Runs as a single self-hosted container behind a reverse proxy — no separate workers, no message queues.
 
+## Table of Contents
+
+- [What it does](#what-it-does)
+- [Architecture](#architecture)
+- [Deployment](#deployment)
+- [Unraid](#unraid)
+- [Reverse proxy](#reverse-proxy)
+- [Environment variables](#environment-variables)
+- [Settings (Web UI)](#settings-web-ui)
+- [Local development](#local-development)
+- [Tests](#tests)
+- [Backup](#backup)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Maintainer](#maintainer)
+- [License](#license)
+
+---
+
 ## What it does
 
 - Polls the Papierkram API every N minutes for sent invoices (`state: unpaid | paid | overdue | open`)
@@ -194,6 +213,14 @@ docker compose up -d
 **Auth errors after restart:** Session tokens are in-memory — users need to log in again after a container restart.
 
 **`Too Many Requests` from Papierkram:** Increase the polling interval in Settings.
+
+## Contributing
+
+Contributions are welcome. Please read the project documents before opening a PR:
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — dev setup, architecture constraints, PR process
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community standards
+- [SECURITY.md](SECURITY.md) — how to report vulnerabilities
 
 ## Maintainer
 
