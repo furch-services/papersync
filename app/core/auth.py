@@ -1,11 +1,17 @@
 import hmac
 import hashlib
-from itsdangerous import URLSafeSerializer, BadSignature
+import secrets
+from typing import Set
+
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 from app.core.config import settings
 
 SESSION_COOKIE = "ps_session"
-_serializer = URLSafeSerializer(settings.SECRET_KEY, salt="auth-session")
+SESSION_TTL = 8 * 60 * 60  # 8 hours
+
+_serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="auth-session")
+_revoked_jtis: Set[str] = set()
 
 
 def check_credentials(username: str, password: str) -> bool:
@@ -18,12 +24,24 @@ def check_credentials(username: str, password: str) -> bool:
 
 
 def create_session_token() -> str:
-    return _serializer.dumps({"auth": True})
+    jti = secrets.token_urlsafe(16)
+    return _serializer.dumps({"auth": True, "jti": jti})
 
 
 def verify_session_token(token: str) -> bool:
     try:
-        data = _serializer.loads(token)
-        return bool(data.get("auth"))
-    except BadSignature:
+        data = _serializer.loads(token, max_age=SESSION_TTL)
+        jti = data.get("jti")
+        return bool(data.get("auth")) and jti not in _revoked_jtis
+    except (BadSignature, SignatureExpired):
         return False
+
+
+def revoke_session_token(token: str) -> None:
+    try:
+        data = _serializer.loads(token, max_age=SESSION_TTL)
+        jti = data.get("jti")
+        if jti:
+            _revoked_jtis.add(jti)
+    except (BadSignature, SignatureExpired):
+        pass
