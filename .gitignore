@@ -43,8 +43,10 @@ logs/
 
 # Claude Code / Claudify
 .claude/
+.mcp.json
 CLAUDE.md
 CLAUDE.local.md
+SETUP.md
 Task Board.md
 Scratchpad.md
 Daily Notes/
