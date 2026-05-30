@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
@@ -8,6 +10,8 @@ from app.core.config import settings
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+FormField = Annotated[str, Form()]
+
 
 @router.get("/login", response_class=HTMLResponse)
 def login_page(request: Request, error: str = "") -> HTMLResponse:
@@ -17,8 +21,8 @@ def login_page(request: Request, error: str = "") -> HTMLResponse:
 @router.post("/login")
 def login(
     request: Request,
-    username: str = Form(...),
-    password: str = Form(...),
+    username: FormField,
+    password: FormField,
 ) -> Response:
     if not check_credentials(username, password):
         return templates.TemplateResponse(
