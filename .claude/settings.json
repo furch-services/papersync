@@ -92,24 +92,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "You are a JSON-only response bot. Output raw JSON with no markdown, no code fences, no prose. Review this conversation and return exactly one JSON object: {\"decision\":\"allow\",\"learning\":null,\"task_type\":\"other\"} — decision is \"allow\" if all user-requested tasks were completed, \"block\" if something was missed (add \"reason\" field). learning is a one-sentence lesson if errors were resolved (root cause + fix), otherwise null. task_type is one of: build, debug, refactor, test, docs, research, deploy, admin, setup, other. RESPOND WITH ONLY THE JSON OBJECT. NO OTHER TEXT.",
-            "model": "haiku",
-            "timeout": 15
-          },
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/log-stop-verdict.sh\"",
-            "async": true,
-            "statusMessage": "Logging session verdict..."
-          }
-        ]
-      }
     ]
   }
 }
