@@ -17,7 +17,9 @@ _TEST_KEY = "20JYBYlqYwBOJcWMP7_7UC1ja3fPiJnXq10SEF09L6Q="
 os.environ["SECRET_KEY"] = _TEST_KEY
 os.environ["DATABASE_URL"] = _TEST_DB
 os.environ["LOG_FILE"] = f"{_tmpdir}/test.log"
+os.environ.setdefault("APP_PASSWORD", "testpassword")
 
+from app.core.auth import SESSION_COOKIE, create_session_token  # noqa: E402
 from app.core.database import Base, get_db_session  # noqa: E402
 from app.main import app  # noqa: E402
 
@@ -53,5 +55,6 @@ def client(db):
     app.dependency_overrides[get_db_session] = override_db
     with patch.object(app.router, "lifespan_context", _null_lifespan):
         with TestClient(app, raise_server_exceptions=True) as c:
+            c.cookies.set(SESSION_COOKIE, create_session_token())
             yield c
     app.dependency_overrides.clear()

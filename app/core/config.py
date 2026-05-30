@@ -9,6 +9,8 @@ class AppConfig(BaseSettings):
     LOG_LEVEL: str = "INFO"
     LOG_FILE: str = "/app/logs/app.log"
     APP_ENV: str = "production"
+    APP_USERNAME: str = "admin"
+    APP_PASSWORD: str
 
 
 settings = AppConfig()
