@@ -1,0 +1,57 @@
+name: Bug Report
+description: Something isn't working as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing a bug, please check the [troubleshooting section](../../blob/main/README.md#troubleshooting) in the README and search existing issues.
+
+  - type: input
+    id: version
+    attributes:
+      label: PaperSync version
+      description: Docker image tag or commit SHA (check the container logs on startup).
+      placeholder: "e.g. sha-a1b2c3d or latest"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste relevant lines from the container logs. **Redact any API keys or credentials.**
+      render: text
+
+  - type: input
+    id: deployment
+    attributes:
+      label: Deployment
+      description: How is PaperSync deployed?
+      placeholder: "e.g. Docker Compose behind Caddy, Docker Compose direct port"

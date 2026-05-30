@@ -1,0 +1,41 @@
+name: Feature Request
+description: Suggest an improvement or new feature.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests are welcome. Please check existing issues first to avoid duplicates.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case or limitation you're running into.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to see? How should it work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches you've thought about?
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Architecture fit
+      description: PaperSync intentionally avoids additional infrastructure. Please confirm your proposal fits within these constraints.
+      options:
+        - label: Does not require Redis, RabbitMQ, Celery, PostgreSQL, React, Vue, or Node.js
+          required: true
+        - label: Runs inside the single application container (no separate worker or sidecar)
+          required: true

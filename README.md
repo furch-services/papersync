@@ -174,6 +174,18 @@ docker compose up -d
 
 **`Too Many Requests` from Papierkram:** Increase the polling interval in Settings.
 
+## Maintainer
+
+PaperSync is developed and maintained by **[Furch Services](https://furch-services.de)** — IT-Dienstleister aus Norderstedt.
+
+| | |
+|---|---|
+| **Name** | Maximilian Furch |
+| **Company** | Furch Services |
+| **Website** | [furch-services.de](https://furch-services.de) |
+| **Contact** | [kontakt@furch-services.de](mailto:kontakt@furch-services.de) |
+| **Location** | Norderstedt, Germany |
+
 ## License
 
 [AGPL-3.0](LICENSE)
