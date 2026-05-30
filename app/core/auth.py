@@ -3,7 +3,7 @@ import hashlib
 import secrets
 from typing import Set
 
-from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer, BadSignature
 
 from app.core.config import settings
 
@@ -33,7 +33,7 @@ def verify_session_token(token: str) -> bool:
         data = _serializer.loads(token, max_age=SESSION_TTL)
         jti = data.get("jti")
         return bool(data.get("auth")) and jti not in _revoked_jtis
-    except (BadSignature, SignatureExpired):
+    except BadSignature:
         return False
 
 
@@ -43,5 +43,5 @@ def revoke_session_token(token: str) -> None:
         jti = data.get("jti")
         if jti:
             _revoked_jtis.add(jti)
-    except (BadSignature, SignatureExpired):
+    except BadSignature:
         pass
