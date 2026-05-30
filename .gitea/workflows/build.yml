@@ -30,17 +30,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests with coverage
+      - name: Run tests
         env:
-          SECRET_KEY: ${{ secrets.SONAR_TEST_SECRET_KEY || 'dGVzdC10ZXN0LXRlc3QtdGVzdC10ZXN0LXRlc3Q=' }}
+          SECRET_KEY: ${{ secrets.SONAR_TEST_SECRET_KEY }}
           DATABASE_URL: sqlite:////tmp/test.db
           LOG_FILE: /tmp/papersync-test.log
-        run: |
-          pytest tests/ \
-            --cov=app \
-            --cov-report=xml:coverage.xml \
-            --cov-report=term-missing \
-            -q
+        run: pytest tests/ -q
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v6
