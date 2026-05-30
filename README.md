@@ -77,6 +77,12 @@ services:
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+    networks:
+      - internal
+
+networks:
+  internal:
+    external: true
 ```
 
 ### 5. Start
