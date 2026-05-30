@@ -41,9 +41,10 @@ logs/
 *.swp
 *.swo
 
-# Claudify — personal & runtime files
+# Claude Code / Claudify
+.claude/
+CLAUDE.md
 CLAUDE.local.md
-.claude/logs/
-.claude/agent-memory/
-.claude/backups/
-.claude/hooks/__counter
+Task Board.md
+Scratchpad.md
+Daily Notes/
