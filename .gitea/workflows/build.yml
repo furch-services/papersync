@@ -12,8 +12,46 @@ env:
   IMAGE_NAME: papersync
 
 jobs:
-  build:
+  sonarqube:
+    name: SonarQube Scan
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests with coverage
+        env:
+          SECRET_KEY: ${{ secrets.SONAR_TEST_SECRET_KEY || 'dGVzdC10ZXN0LXRlc3QtdGVzdC10ZXN0LXRlc3Q=' }}
+          DATABASE_URL: sqlite:////tmp/test.db
+          LOG_FILE: /tmp/papersync-test.log
+        run: |
+          pytest tests/ \
+            --cov=app \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            -q
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+
+  build:
+    name: Build and Publish Container
+    runs-on: ubuntu-latest
+    needs: sonarqube
 
     steps:
       - name: Checkout repository

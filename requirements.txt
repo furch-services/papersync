@@ -26,4 +26,5 @@ pydantic-settings==2.9.1
 
 # Testing
 pytest==8.3.5
+pytest-cov==6.1.0
 respx==0.21.1
