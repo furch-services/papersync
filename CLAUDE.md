@@ -1,3 +1,107 @@
+# PaperSync - Claude Instructions
+
+## Architecture Rules
+
+* Container-first development.
+* The Docker image is the primary deployment artifact.
+* The application must always remain buildable as a Docker image.
+* Do not introduce unnecessary infrastructure components.
+* Avoid Redis, RabbitMQ, Celery, PostgreSQL, React, Vue or NodeJS unless explicitly requested.
+* Prefer FastAPI, SQLite, APScheduler and Jinja2.
+
+---
+
+## Development Workflow
+
+Before implementing business logic:
+
+1. Verify Docker build still works.
+2. Verify project structure is consistent.
+3. Keep the application deployable at all times.
+
+---
+
+## CI/CD Requirements
+
+This section has highest priority.
+
+Before implementing application features, ensure:
+
+* Dockerfile exists.
+* .gitea/workflows/build.yml exists.
+* .env.example exists.
+* README.md exists.
+
+The first implementation task for every new repository is establishing the build pipeline.
+
+---
+
+## Gitea Actions
+
+Create:
+
+.gitea/workflows/build.yml
+
+Workflow responsibilities:
+
+* Build Docker image
+* Tag image with latest
+* Tag image with commit SHA
+* Push image to Gitea Container Registry
+
+The workflow must succeed before feature development continues.
+
+---
+
+## Deployment Requirements
+
+Deployment target:
+
+Cloudflare Tunnel
+→ Caddy
+→ PaperSync Container
+
+Requirements:
+
+* No exposed ports on the application container.
+* Internal Docker network only.
+* Reverse proxy handled by Caddy.
+* Application must support operation behind a reverse proxy.
+
+---
+
+## Coding Standards
+
+* Python 3.13
+* Full type hints
+* Pydantic models
+* SQLAlchemy
+* Alembic
+* Ruff compatible
+* Black compatible
+* Pytest coverage
+
+---
+
+## Database
+
+Default database:
+
+SQLite
+
+Only introduce PostgreSQL if explicitly requested.
+
+---
+
+## Scheduler
+
+Use APScheduler.
+
+Do not introduce Celery, Redis or message queues.
+
+The scheduler runs inside the application container.
+
+
 # Claude Context — Claudify
 
 This project uses Claudify, a professional operating system for Claude Code.
