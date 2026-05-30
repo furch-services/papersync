@@ -95,7 +95,8 @@ jobs:
         run: |
           docker pull ${{ vars.REGISTRY }}/gitea_max.furch/${{ env.IMAGE_NAME }}:latest
           docker run --rm \
+            --entrypoint python \
             -e SECRET_KEY="$(python3 -c 'import secrets,base64; print(base64.urlsafe_b64encode(secrets.token_bytes(32)).decode())')" \
             -e DATABASE_URL="sqlite:////tmp/test.db" \
             ${{ vars.REGISTRY }}/gitea_max.furch/${{ env.IMAGE_NAME }}:latest \
-            python -c "from app.main import app; print('Build validation OK')"
+            -c "from app.main import app; print('Build validation OK')"
