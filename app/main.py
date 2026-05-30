@@ -5,6 +5,7 @@ from alembic.config import Config as AlembicConfig
 from alembic import command as alembic_command
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse, Response
 
@@ -74,6 +75,8 @@ app = FastAPI(
     redoc_url=None,
     lifespan=lifespan,
 )
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(AuthMiddleware)
