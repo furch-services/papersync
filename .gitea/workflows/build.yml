@@ -42,11 +42,27 @@ jobs:
             --cov-report=xml:coverage.xml \
             -q
 
-      - name: SonarQube Scan
+      - name: SonarQube Scan (branch)
+        if: github.event_name == 'push'
         uses: sonarsource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.branch.name=${{ github.ref_name }}
+
+      - name: SonarQube Scan (pull request)
+        if: github.event_name == 'pull_request'
+        uses: sonarsource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+            -Dsonar.pullrequest.branch=${{ github.head_ref }}
+            -Dsonar.pullrequest.base=${{ github.base_ref }}
 
   build:
     name: Build and Publish Container
