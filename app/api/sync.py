@@ -1,3 +1,4 @@
+import hmac
 from typing import Annotated
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Form, Header, Request
@@ -42,7 +43,7 @@ def webhook_trigger(
 ) -> JSONResponse:
     if not settings.WEBHOOK_SECRET:
         return JSONResponse({"detail": "Webhook not configured"}, status_code=503)
-    if not authorization or authorization != f"Bearer {settings.WEBHOOK_SECRET}":
+    if not authorization or not hmac.compare_digest(authorization, f"Bearer {settings.WEBHOOK_SECRET}"):
         return JSONResponse({"detail": "Unauthorized"}, status_code=401)
     background_tasks.add_task(_run_sync, dry_run=dry_run)
     return JSONResponse({"status": "started"}, status_code=202)
