@@ -26,12 +26,25 @@ def _run_sync(dry_run: bool = False) -> SyncResult:
 
 @router.post("/sync/run")
 def trigger_sync(
+    request: Request,
     background_tasks: BackgroundTasks,
     csrf_token: Annotated[str, Form()],
-) -> RedirectResponse:
+) -> Response:
     if not verify_csrf_token(csrf_token):
+        if request.headers.get("HX-Request"):
+            return HTMLResponse(
+                '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i>'
+                "Ungültiger CSRF-Token — bitte Seite neu laden.</div>",
+                status_code=200,
+            )
         return RedirectResponse("/dashboard?error=csrf", status_code=303)
     background_tasks.add_task(_run_sync, dry_run=False)
+    if request.headers.get("HX-Request"):
+        return HTMLResponse(
+            '<div class="alert alert-info alert-dismissible fade show" role="alert">'
+            '<i class="bi bi-arrow-repeat me-1"></i> Synchronisation gestartet…'
+            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
+        )
     return RedirectResponse("/dashboard?syncing=1", status_code=303)
 
 
@@ -56,7 +69,14 @@ async def trigger_test_run(
     db: DbSession,
 ) -> Response:
     if not verify_csrf_token(csrf_token):
+        if request.headers.get("HX-Request"):
+            return HTMLResponse(
+                '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i>'
+                "Ungültiger CSRF-Token — bitte Seite neu laden.</div>",
+                status_code=200,
+            )
         return RedirectResponse("/dashboard?error=csrf", status_code=303)
 
     result = SyncService(db).run_sync(dry_run=True)
-    return templates.TemplateResponse(request, "dry_run_result.html", {"result": result})
+    template = "_dry_run_result.html" if request.headers.get("HX-Request") else "dry_run_result.html"
+    return templates.TemplateResponse(request, template, {"result": result})

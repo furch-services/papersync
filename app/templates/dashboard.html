@@ -4,13 +4,15 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="h3 mb-0">Dashboard</h1>
   <div class="d-flex gap-2">
-    <form method="post" action="/sync/test">
+    <form method="post" action="/sync/test"
+          hx-post="/sync/test" hx-target="#dry-run-result" hx-swap="innerHTML">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
       <button type="submit" class="btn btn-outline-secondary">
         <i class="bi bi-eye"></i> Testlauf
       </button>
     </form>
-    <form method="post" action="/sync/run">
+    <form method="post" action="/sync/run"
+          hx-post="/sync/run" hx-target="#sync-feedback" hx-swap="innerHTML">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
       <button type="submit" class="btn btn-primary">
         <i class="bi bi-arrow-repeat"></i> Jetzt synchronisieren
@@ -18,6 +20,8 @@
     </form>
   </div>
 </div>
+<div id="sync-feedback"></div>
+<div id="dry-run-result" class="mb-3"></div>
 
 <div class="row g-3 mb-4">
   <div class="col-md-3">
@@ -75,31 +79,11 @@
     <span><i class="bi bi-journal-text me-1"></i>Letzte Log-Einträge</span>
     <a href="/logs" class="btn btn-sm btn-outline-secondary">Alle anzeigen</a>
   </div>
-  <div class="card-body p-0">
-    {% if recent_logs %}
-    <table class="table table-sm table-hover mb-0">
-      <thead class="table-light">
-        <tr>
-          <th>Zeitstempel</th>
-          <th>Level</th>
-          <th>Quelle</th>
-          <th>Nachricht</th>
-        </tr>
-      </thead>
-      <tbody class="font-monospace small">
-        {% for log in recent_logs %}
-        <tr>
-          <td class="text-nowrap text-muted">{{ log.timestamp.strftime('%d.%m %H:%M:%S') }}</td>
-          <td><span class="log-{{ log.level }}">{{ log.level }}</span></td>
-          <td class="text-muted">{{ log.source }}</td>
-          <td>{{ log.message }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <div class="p-4 text-center text-muted">Noch keine Log-Einträge.</div>
-    {% endif %}
+  <div class="card-body p-0"
+       hx-get="/dashboard/logs"
+       hx-trigger="every 30s"
+       hx-swap="innerHTML">
+    {% include "_dashboard_logs.html" %}
   </div>
 </div>
 {% endblock %}
