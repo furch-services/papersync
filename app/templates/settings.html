@@ -3,11 +3,14 @@
 {% block content %}
 <h1 class="h3 mb-4">Einstellungen</h1>
 
+<div id="settings-feedback" class="mb-3"></div>
+
 {% if error %}
 <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i>{{ error }}</div>
 {% endif %}
 
-<form method="post" action="/settings">
+<form method="post" action="/settings"
+      hx-post="/settings" hx-target="#settings-feedback" hx-swap="innerHTML">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
   <div class="card mb-4">

@@ -16,6 +16,12 @@ templates = Jinja2Templates(directory="app/templates")
 DbSession = Annotated[Session, Depends(get_db_session)]
 
 
+@router.get("/dashboard/logs", response_class=HTMLResponse)
+def dashboard_logs_partial(request: Request, db: DbSession) -> HTMLResponse:
+    recent_logs, _ = log_repo.get_logs(db, page=1, page_size=10)
+    return templates.TemplateResponse(request, "_dashboard_logs.html", {"recent_logs": recent_logs})
+
+
 @router.get("/", response_class=HTMLResponse)
 @router.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request, db: DbSession) -> HTMLResponse:

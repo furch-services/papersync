@@ -67,4 +67,10 @@ def settings_save(
     settings_repo.save_settings(db, cfg)
     scheduler.reschedule(cfg.polling_interval_minutes)
 
+    if request.headers.get("HX-Request"):
+        return HTMLResponse(
+            '<div class="alert alert-success alert-dismissible fade show" role="alert">'
+            '<i class="bi bi-check-circle me-1"></i> Einstellungen gespeichert.'
+            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>'
+        )
     return RedirectResponse("/settings?saved=1", status_code=303)
