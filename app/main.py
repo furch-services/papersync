@@ -20,7 +20,7 @@ from app.scheduler import scheduler as sched
 from app.api import auth as auth_router, dashboard, logs, settings as settings_router, sync
 
 
-_AUTH_EXEMPT = {"/login", "/health"}
+_AUTH_EXEMPT = {"/login", "/health", "/sync/trigger"}
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
