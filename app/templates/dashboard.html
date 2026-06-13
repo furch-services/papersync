@@ -82,6 +82,50 @@
   </div>
 </div>
 
+<div class="row g-3 mb-3">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small mb-1"><i class="bi bi-cloud-upload me-1"></i>Hochgeladen (gesamt)</div>
+        <div class="fs-5 fw-semibold">{{ stats.total_uploaded }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small mb-1"><i class="bi bi-skip-forward me-1"></i>Übersprungen (gesamt)</div>
+        <div class="fs-5 fw-semibold">{{ stats.total_skipped }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small mb-1"><i class="bi bi-exclamation-circle me-1"></i>Fehler (gesamt)</div>
+        <div class="fs-5 fw-semibold">{{ stats.total_errors }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card h-100 {% if stats.permanently_failed > 0 %}border-warning{% endif %}">
+      <div class="card-body">
+        <div class="text-muted small mb-1"><i class="bi bi-x-circle me-1 {% if stats.permanently_failed > 0 %}text-warning{% endif %}"></i>Dauerhaft fehlgeschlagen</div>
+        <div class="fs-5 fw-semibold {% if stats.permanently_failed > 0 %}text-warning{% endif %}">{{ stats.permanently_failed }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <i class="bi bi-bar-chart-line me-1"></i>Uploads — letzte 14 Tage
+  </div>
+  <div class="card-body">
+    <canvas id="activityChart" style="max-height: 220px;"></canvas>
+  </div>
+</div>
+
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <span><i class="bi bi-journal-text me-1"></i>Letzte Log-Einträge</span>
@@ -94,4 +138,35 @@
     {% include "_dashboard_logs.html" %}
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const labels = {{ stats.labels | tojson }};
+  const data = {{ stats.uploads_per_day | tojson }};
+  const ctx = document.getElementById('activityChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: '#2f84ff',
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }
+      }
+    }
+  });
+})();
+</script>
 {% endblock %}

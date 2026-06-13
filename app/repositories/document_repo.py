@@ -1,5 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.processed_document import FAILED, PENDING, UPLOADED, ProcessedDocument
@@ -111,3 +112,20 @@ def count_permanently_failed(db: Session, max_retries: int) -> int:
         )
         .count()
     )
+
+
+def get_daily_upload_counts(db: Session, days: int = 14) -> dict[str, int]:
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    rows = (
+        db.query(
+            func.date(ProcessedDocument.uploaded_at).label("day"),
+            func.count().label("cnt"),
+        )
+        .filter(
+            ProcessedDocument.uploaded_at >= cutoff,
+            ProcessedDocument.status.in_([PENDING, UPLOADED]),
+        )
+        .group_by(func.date(ProcessedDocument.uploaded_at))
+        .all()
+    )
+    return {row.day: row.cnt for row in rows}

@@ -17,7 +17,7 @@ from app.core.logging_config import setup_logging
 from app.repositories.settings_repo import get_settings
 from app.repositories import sync_state_repo
 from app.scheduler import scheduler as sched
-from app.api import auth as auth_router, dashboard, logs, settings as settings_router, sync
+from app.api import auth as auth_router, dashboard, logs, settings as settings_router, stats, sync
 
 
 _AUTH_EXEMPT = {"/login", "/health", "/sync/trigger"}
@@ -86,6 +86,7 @@ app.include_router(auth_router.router)
 app.include_router(dashboard.router)
 app.include_router(settings_router.router)
 app.include_router(logs.router)
+app.include_router(stats.router)
 app.include_router(sync.router)
 
 
