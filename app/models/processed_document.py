@@ -5,6 +5,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
 
+PENDING = "PENDING"
+UPLOADED = "UPLOADED"
+FAILED = "FAILED"
+
 
 class ProcessedDocument(Base):
     __tablename__ = "processed_documents"
@@ -18,3 +22,5 @@ class ProcessedDocument(Base):
     document_date: Mapped[str | None] = mapped_column(String, nullable=True)
     total_gross: Mapped[float | None] = mapped_column(Float, nullable=True)
     uploaded_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default=UPLOADED)
+    retry_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

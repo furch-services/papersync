@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.crypto import decrypt
 from app.repositories import document_repo, log_repo, settings_repo, sync_state_repo
 from app.services.papierkram import Invoice, PapierkramService
@@ -61,6 +62,13 @@ class SyncService:
         except Exception as exc:
             log_repo.write_log(self._db, "ERROR", "papierkram",
                 f"PDF download failed for invoice {invoice.id}: {exc}")
+            document_repo.mark_failed(
+                self._db,
+                papierkram_id=invoice.id,
+                invoice_no=invoice.invoice_no,
+                document_date=invoice.document_date,
+                total_gross=invoice.total_gross,
+            )
             return 0, 1
 
         tags = json.loads(cfg.default_tags) if cfg and cfg.default_tags else []  # type: ignore[union-attr]
@@ -80,6 +88,13 @@ class SyncService:
         except Exception as exc:
             log_repo.write_log(self._db, "ERROR", "paperless",
                 f"Paperless upload failed for invoice {invoice.id}: {exc}")
+            document_repo.mark_failed(
+                self._db,
+                papierkram_id=invoice.id,
+                invoice_no=invoice.invoice_no,
+                document_date=invoice.document_date,
+                total_gross=invoice.total_gross,
+            )
             return 0, 1
 
         document_repo.mark_processed(
@@ -116,10 +131,17 @@ class SyncService:
             return SyncResult(uploaded=0, skipped=0, errors=1, dry_run=dry_run)
 
         cfg = settings_repo.get_settings(self._db)
+        max_retries = settings.MAX_RETRIES
         uploaded = skipped = errors = 0
 
         for invoice in invoices:
             if document_repo.is_processed(self._db, invoice.id):
+                skipped += 1
+                continue
+            if document_repo.is_permanently_failed(self._db, invoice.id, max_retries):
+                log_repo.write_log(self._db, "WARNING", "sync",
+                    f"Invoice {invoice.invoice_no or invoice.id} permanently failed after "
+                    f"{max_retries} attempts, skipping")
                 skipped += 1
                 continue
             if dry_run:

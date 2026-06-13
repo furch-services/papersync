@@ -12,6 +12,7 @@ class AppConfig(BaseSettings):
     APP_USERNAME: str = "admin"
     APP_PASSWORD: str
     WEBHOOK_SECRET: str | None = None
+    MAX_RETRIES: int = 3
 
 
 settings = AppConfig()

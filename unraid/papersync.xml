@@ -130,4 +130,14 @@
     Required="false"
     Mask="true"/>
 
+  <Config
+    Name="MAX_RETRIES"
+    Target="MAX_RETRIES"
+    Default="3"
+    Description="Number of failed upload attempts before a document is permanently skipped. Permanently failed documents are shown on the dashboard."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
 </Container>

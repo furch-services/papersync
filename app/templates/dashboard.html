@@ -24,7 +24,7 @@
 <div id="dry-run-result" class="mb-3"></div>
 
 <div class="row g-3 mb-4">
-  <div class="col-md-3">
+  <div class="col-sm-6 col-xl">
     <div class="card h-100">
       <div class="card-body">
         <div class="text-muted small mb-1"><i class="bi bi-circle-fill {% if scheduler.running %}text-success{% else %}text-danger{% endif %} me-1"></i>Scheduler</div>
@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-sm-6 col-xl">
     <div class="card h-100">
       <div class="card-body">
         <div class="text-muted small mb-1"><i class="bi bi-clock me-1"></i>Letzter Sync</div>
@@ -49,7 +49,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-sm-6 col-xl">
     <div class="card h-100">
       <div class="card-body">
         <div class="text-muted small mb-1"><i class="bi bi-file-earmark-pdf me-1"></i>Hochgeladen (gesamt)</div>
@@ -57,7 +57,15 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-sm-6 col-xl">
+    <div class="card h-100 {% if permanently_failed > 0 %}border-warning{% endif %}">
+      <div class="card-body">
+        <div class="text-muted small mb-1"><i class="bi bi-x-circle me-1 {% if permanently_failed > 0 %}text-warning{% endif %}"></i>Dauerhaft fehlgeschlagen</div>
+        <div class="fs-5 fw-semibold {% if permanently_failed > 0 %}text-warning{% endif %}">{{ permanently_failed }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl">
     <div class="card h-100 {% if state.last_error %}border-danger{% endif %}">
       <div class="card-body">
         <div class="text-muted small mb-1"><i class="bi bi-exclamation-triangle me-1 {% if state.last_error %}text-danger{% endif %}"></i>Letzter Fehler</div>
