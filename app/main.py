@@ -9,17 +9,18 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse, Response
 
+from app import __version__
 from app.core.auth import SESSION_COOKIE, verify_session_token
 from app.core.config import settings
-from app.core.database import engine
+from app.core.database import engine, get_db
 from app.core.logging_config import setup_logging
 from app.repositories.settings_repo import get_settings
-from app.core.database import get_db
+from app.repositories import sync_state_repo
 from app.scheduler import scheduler as sched
 from app.api import auth as auth_router, dashboard, logs, settings as settings_router, sync
 
 
-_AUTH_EXEMPT = {"/login", "/health"}
+_AUTH_EXEMPT = {"/login", "/health", "/sync/trigger"}
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -70,7 +71,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(
     title="PaperSync",
     description="Synchronizes Papierkram invoices to Paperless-ngx",
-    version="0.1.0",
+    version=__version__,
     docs_url=None,
     redoc_url=None,
     lifespan=lifespan,
@@ -90,4 +91,27 @@ app.include_router(sync.router)
 
 @app.get("/health")
 def health() -> JSONResponse:
-    return JSONResponse({"status": "ok"})
+    db_status = "ok"
+    last_sync_at: str | None = None
+    last_sync_status = "never"
+
+    try:
+        with get_db() as db:
+            state = sync_state_repo.get_or_create_state(db)
+            if state.last_sync_at:
+                last_sync_at = state.last_sync_at.isoformat()
+                last_sync_status = "error" if state.last_error else "success"
+    except Exception:
+        db_status = "error"
+
+    status = "ok" if db_status == "ok" else "degraded"
+    return JSONResponse(
+        {
+            "status": status,
+            "database": db_status,
+            "last_sync_at": last_sync_at,
+            "last_sync_status": last_sync_status,
+            "version": __version__,
+        },
+        status_code=200 if status == "ok" else 503,
+    )

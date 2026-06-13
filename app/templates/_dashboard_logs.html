@@ -1,0 +1,24 @@
+{% if recent_logs %}
+<table class="table table-sm table-hover mb-0">
+  <thead class="table-light">
+    <tr>
+      <th>Zeitstempel</th>
+      <th>Level</th>
+      <th>Quelle</th>
+      <th>Nachricht</th>
+    </tr>
+  </thead>
+  <tbody class="font-monospace small">
+    {% for log in recent_logs %}
+    <tr>
+      <td class="text-nowrap text-muted">{{ log.timestamp.strftime('%d.%m %H:%M:%S') }}</td>
+      <td><span class="log-{{ log.level }}">{{ log.level }}</span></td>
+      <td class="text-muted">{{ log.source }}</td>
+      <td>{{ log.message }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="p-4 text-center text-muted">Noch keine Log-Einträge.</div>
+{% endif %}

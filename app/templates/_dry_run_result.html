@@ -1,0 +1,28 @@
+<div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center fw-semibold">
+    <span><i class="bi bi-eye me-1"></i>Testlauf-Ergebnis</span>
+    <button type="button" class="btn-close" onclick="this.closest('.card').remove()"></button>
+  </div>
+  <div class="card-body">
+    <div class="row text-center g-3">
+      <div class="col-md-4">
+        <div class="fs-1 fw-bold text-primary">{{ result.uploaded }}</div>
+        <div class="text-muted">Würden hochgeladen</div>
+      </div>
+      <div class="col-md-4">
+        <div class="fs-1 fw-bold text-secondary">{{ result.skipped }}</div>
+        <div class="text-muted">Bereits synchronisiert</div>
+      </div>
+      <div class="col-md-4">
+        <div class="fs-1 fw-bold text-danger">{{ result.errors }}</div>
+        <div class="text-muted">Fehler</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="alert alert-info mb-0">
+      <i class="bi bi-info-circle me-1"></i>
+      Dies war ein Testlauf. Es wurden <strong>keine Dokumente</strong> in Paperless-ngx hochgeladen.
+    </div>
+  </div>
+</div>

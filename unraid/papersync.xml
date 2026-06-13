@@ -120,4 +120,24 @@
     Required="false"
     Mask="false"/>
 
+  <Config
+    Name="WEBHOOK_SECRET"
+    Target="WEBHOOK_SECRET"
+    Default=""
+    Description="Optional secret token to enable the POST /sync/trigger webhook endpoint. Allows external tools (n8n, Zapier, cron) to trigger a sync via HTTP. Generate with: python3 -c &quot;import secrets; print(secrets.token_hex(32))&quot;"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="true"/>
+
+  <Config
+    Name="MAX_RETRIES"
+    Target="MAX_RETRIES"
+    Default="3"
+    Description="Number of failed upload attempts before a document is permanently skipped. Permanently failed documents are shown on the dashboard."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
 </Container>

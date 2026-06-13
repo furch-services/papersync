@@ -114,6 +114,38 @@ docker compose up -d
 
 Open the web UI, log in, and enter your Papierkram and Paperless-ngx credentials under **Einstellungen**.
 
+## Webhook
+
+PaperSync exposes a webhook endpoint so external tools (n8n, Zapier, shell scripts) can trigger a sync without using the web UI.
+
+### Setup
+
+Set `WEBHOOK_SECRET` in your `.env` file:
+
+```env
+# Generate with: python3 -c "import secrets; print(secrets.token_hex(32))"
+WEBHOOK_SECRET=your-secret-here
+```
+
+### Usage
+
+```bash
+# Trigger a sync
+curl -X POST https://your-papersync-url/sync/trigger \
+  -H "Authorization: Bearer your-secret-here"
+
+# Trigger a dry run
+curl -X POST https://your-papersync-url/sync/trigger?dry_run=true \
+  -H "Authorization: Bearer your-secret-here"
+```
+
+**Responses:**
+| Status | Meaning |
+|--------|---------|
+| `202 Accepted` | Sync started in background |
+| `401 Unauthorized` | Missing or invalid token |
+| `503 Service Unavailable` | `WEBHOOK_SECRET` not configured |
+
 ## Unraid
 
 PaperSync is available in the [Unraid Community Applications](https://ca.unraid.net) store. Search for **PaperSync** and install directly from the CA interface.
