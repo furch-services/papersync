@@ -48,6 +48,18 @@ def db():
 
 
 @pytest.fixture()
+def anon_client(db):
+    def override_db():
+        yield db
+
+    app.dependency_overrides[get_db_session] = override_db
+    with patch.object(app.router, "lifespan_context", _null_lifespan):
+        with TestClient(app, raise_server_exceptions=True) as c:
+            yield c
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture()
 def client(db):
     def override_db():
         yield db
