@@ -7,7 +7,7 @@ sqlalchemy==2.0.41
 alembic==1.14.1
 
 # Scheduler
-apscheduler==3.10.4
+apscheduler==3.11.3
 
 # HTTP client & retry
 httpx==0.28.1
