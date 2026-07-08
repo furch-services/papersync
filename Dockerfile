@@ -1,5 +1,5 @@
 # Stage 1: Build dependencies
-FROM python:3.13-slim AS builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /build
 
@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install --prefix=/install --no-cache-dir --no-warn-script-location -r requirements.txt
 
 # Stage 2: Runtime image
-FROM python:3.13-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 LABEL org.opencontainers.image.title="PaperSync" \
       org.opencontainers.image.description="Synchronizes Papierkram invoices to Paperless-ngx"
