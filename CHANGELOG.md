@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-07-08
+
+### Tests
+- Added integration tests for login/logout endpoints and core auth functions (`check_credentials`, `verify_session_token`, `revoke_session_token`)
+- Added unit tests for scheduler running paths (`start`, `stop`, `reschedule`, `get_status`) and `_sync_job` (success and exception handling)
+- Added `anon_client` fixture for unauthenticated route testing
+- Increased test coverage from 86% to 92%
+
 ## [1.0.1] - 2026-07-08
 
 ### Added

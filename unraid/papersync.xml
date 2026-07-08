@@ -16,8 +16,14 @@
     Single container — no external dependencies, no message queues.
   </Overview>
   <Beta>false</Beta>
-  <Version>1.0.1</Version>
+  <Version>1.0.2</Version>
   <Changes>
+    [h3]v1.0.2 (2026-07-08)[/h3]
+    [b]Tests[/b]
+    [ul]
+    [li]Added auth and scheduler tests; coverage increased from 86% to 92%[/li]
+    [/ul]
+
     [h3]v1.0.1 (2026-07-08)[/h3]
     [b]Security[/b]
     [ul]
