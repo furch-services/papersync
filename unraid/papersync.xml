@@ -16,6 +16,27 @@
     Single container — no external dependencies, no message queues.
   </Overview>
   <Beta>false</Beta>
+  <Version>1.0.1</Version>
+  <Changes>
+    [h3]v1.0.1 (2026-07-08)[/h3]
+    [b]Security[/b]
+    [ul]
+    [li]Updated python-multipart 0.0.20 → 0.0.32: fixes 6 CVEs (DoS, parameter smuggling, arbitrary file write)[/li]
+    [li]Updated cryptography 45.0.3 → 49.0.0: fixes 3 CVEs (OpenSSL, buffer overflow, SECT curve attack)[/li]
+    [li]Updated pytest 8.3.5 → 9.1.1: fixes vulnerable tmpdir handling[/li]
+    [li]Replaced SHA-256 with Argon2 for password hashing[/li]
+    [/ul]
+    [b]Added[/b]
+    [ul]
+    [li]Dependabot configuration for automated dependency updates[/li]
+    [/ul]
+
+    [h3]v1.0.0 (2026-05-30)[/h3]
+    [b]Added[/b]
+    [ul]
+    [li]Initial release[/li]
+    [/ul]
+  </Changes>
   <Category>Tools: Productivity:</Category>
   <WebUI>http://[IP]:[PORT:8000]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/furch-services/papersync/main/unraid/papersync.xml</TemplateURL>
