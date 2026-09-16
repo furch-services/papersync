@@ -53,3 +53,6 @@ Daily Notes/
 
 # Default MacOS Files
 .DS_Store
+
+# Brag video (generated marketing asset, not project source)
+brag-output/
